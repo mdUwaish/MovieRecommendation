@@ -23,5 +23,6 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('user/',include('user_management.urls')),
-    # path('movie/', include('movies.urls'))
+    path('movie/', include('movie_management.urls')),
+    # path('recommendation/', include('movie_recommendation.urls')),
 ]

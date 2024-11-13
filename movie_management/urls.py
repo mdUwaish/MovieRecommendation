@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ActorDetails, CreateMovie, GenreDetailView, GenreListCreateView, ReviewCreate
+from .views import ActorDetails, CreateMovie, GenreDetailView, GenreListCreateView, MovieSearchView, ReviewCreate
 
 urlpatterns = [
     path('create/', CreateMovie.as_view()),
@@ -13,4 +13,5 @@ urlpatterns = [
     path('review/<int:pk>/', ReviewCreate.as_view()),
     path('genres/', GenreListCreateView.as_view()),
     path('genres/<int:pk>/', GenreDetailView.as_view()),
+    path('search/', MovieSearchView.as_view({'get': 'list'})),
 ]

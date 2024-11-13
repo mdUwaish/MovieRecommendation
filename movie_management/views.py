@@ -3,10 +3,14 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.views import  APIView 
+from django_elasticsearch_dsl_drf.filter_backends import DefaultOrderingFilterBackend, SearchFilterBackend, FilteringFilterBackend, OrderingFilterBackend
+from django_elasticsearch_dsl_drf.pagination import LimitOffsetPagination
+from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
 
+from .documents import MovieDocument
+from .models import Actor, Genre, Movie, Review
 from .permissions import IsMovieOwnerOrReadOnly, IsReviewOwner
 from .serializers import ActorSerializer, GenreSerializer, MovieSerializer, ReviewSerializer
-from .models import Actor, Genre, Movie, Review
 
 # Create your views here.
 class CreateMovie(APIView):
@@ -121,3 +125,36 @@ class ReviewCreate(APIView):
             serializer.save(movie=movie, user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class MovieSearchView(DocumentViewSet):
+    document = MovieDocument
+    serializer_class = MovieSerializer
+    pagination_class = LimitOffsetPagination
+
+    filter_backends = [
+        SearchFilterBackend,
+        FilteringFilterBackend,
+        OrderingFilterBackend,
+        DefaultOrderingFilterBackend,
+    ]
+
+    search_fields = {
+        'title': 'text',
+        'description': 'text',
+        'actors.name': 'text',
+    }
+
+    filter_fields = {
+        'release_date': 'date',
+        'rating': 'float',
+        'duration': 'integer',
+        'genres.name': 'text',
+    }
+
+    ordering_fields = {
+        'release_date': 'release_date',
+        'rating': 'rating',
+        'duration': 'duration',
+    }
+    ordering = ('-release_date',)

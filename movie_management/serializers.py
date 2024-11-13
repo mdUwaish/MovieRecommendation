@@ -24,18 +24,21 @@ class GenreSerializer(serializers.ModelSerializer):
             parent = Genre.objects.get(id=parent_data.id)
             validated_data['parent'] = parent
         return super().create(validated_data)
-
-
-class MovieSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Movie
-        fields = ['title', 'description', 'rating', 'duration', 'genres', 'actors']
-
+    
 
 class ActorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Actor
         fields= ['name', 'birth_date', 'biography']
+
+
+class MovieSerializer(serializers.ModelSerializer):
+    genres = GenreSerializer(many=True)
+    actors = ActorSerializer(many=True)
+
+    class Meta:
+        model = Movie
+        fields = ['title', 'description', 'release_date', 'rating', 'duration', 'genres', 'actors']
 
 
 class ReviewSerializer(serializers.ModelSerializer):

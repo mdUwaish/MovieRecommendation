@@ -56,7 +56,6 @@ class Movie(models.Model):
         return self.title
 
 
-
 class Review(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='reviews')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='review_set')
@@ -73,3 +72,4 @@ class Review(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.movie.title} - {self.rating}"
+    
